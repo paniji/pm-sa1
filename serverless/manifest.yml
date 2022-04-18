@@ -1,0 +1,24 @@
+--- 
+functions: 
+  create: 
+    events: 
+      - 
+        http: 
+          integration: lambda
+          method: post
+          path: whatever
+          response: 
+            headers: 
+              Content-Type: "'text/html'"
+            statusCodes: 
+              201: 
+                pattern: ""
+              409: 
+                headers: 
+                  Content-Type: "'application/json+hal'"
+                pattern: ".*\"statusCode\":409,.*"
+                template: 
+                  application/json: $input.path("$.errorMessage")
+                  application/xml: $input.path("$.body.errorMessage")
+            template: $input.path('$')
+    handler: posts.create
